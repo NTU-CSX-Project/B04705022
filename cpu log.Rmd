@@ -1,0 +1,53 @@
+---
+title: "R Notebook"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+```{r}
+library(dplyr)
+library(chron)
+library(ggplot2)
+data=read.csv("Memory.csv")
+tail(data)
+names(data)<-c("machine_id","date","timestamp","Memory_ghz","ip","Memory_usage","total")
+data[,3] <- sapply(data[,3], as.character)
+data.timestamp<-data[,3]
+data$data.timestamp<-data.timestamp
+#data.timestamp <- strptime(data.timestamp,format='%Y-%m-%d %H:%M:%S+0000')
+#dtparts = t(as.data.frame(strsplit(data.timestamp,' ')))
+#row.names(dtparts) = NULL
+data.timestamp <- as.POSIXct(data.timestamp, format="%Y-%m-%d %H:%M:%S")
+#thetimes = chron(dates=dtparts[,1],times=substr(dtparts[,2], 1, 8),
+#                 format=c('y-m-d','h:m:s+0000'))
+data[,3]<-data.timestamp
+data %>%group_by(machine_id,cut(data[,3], breaks="hour")) %>%summarize(Memory_ghz = max(Memory_ghz),Memory_usage = max(Memory_usage))
+ 
+#cut(data[,3], breaks="min")
+maxs <- aggregate(list(data$Memory_usage,data$Memory_ghz), 
+                   list(data$machine_id,cut(data[,3], breaks="30 sec")),
+                   max)
+                
+                 
+names(maxs)<-c("machine","time","Memory_usage_max","Memory_ghz_max")
+head(maxs)
+i325376172<-maxs[maxs[1]=="i-325376172-UserCluster1-sysadmin",]
+a957043145<-maxs[maxs[1]=="a-957043145-UserCluster1-sysadmin",]
+b956223090<-maxs[maxs[1]=="b-956223090-UserCluster1-sysadmin",]
+c959255288<-maxs[maxs[1]=="c-959255288-UserCluster1-sysadmin",]
+t657740490<-maxs[maxs[1]=="t-657740490-UserCluster1-sysadmin",]
+z323389049<-maxs[maxs[1]=="z-323389049-UserCluster1-sysadmin",]
+qplot(seq(1,to=length(c959255288[,3])),c959255288[3],geom="line")
+i325376172$mean_Memory_usage_max<-mean(i325376172$Memory_usage_max)
+i325376172$sd_Memory_usage_max<-sd(i325376172$Memory_usage_max)
+i325376172$state<-0
+i325376172[i325376172[,3]>i325376172$mean_Memory_usage_max+i325376172$sd_Memory_usage_max*1,7]<-1
+i325376172[i325376172[,3]>i325376172$mean_Memory_usage_max+i325376172$sd_Memory_usage_max*2,7]<-2
+i325376172[i325376172[,3]<i325376172$mean_Memory_usage_max-i325376172$sd_Memory_usage_max*1,7]<--1
+i325376172[i325376172[,3]<i325376172$mean_Memory_usage_max-i325376172$sd_Memory_usage_max*2,7]<--2
+table(i325376172$state)
+
+
+```
+

@@ -1,6 +1,5 @@
 #Ted Talks Analysis
-[PPT url](https://docs.google.com/presentation/d/1uk5HWMCUyM99X_mHZfGgpKgFZo6H4NtKEhA0RYWVkZ8/edit#slide=id.g2dee5522c0_0_134
-) 
+[PPT url](https://docs.google.com/presentation/d/e/2PACX-1vS8W2O1llKKdioQtsW7UeWFdfvSrOZ2kxGubmIItj-3YwJN7wuQQb3BWdxYQYVRwFb_NRRM4nAiBlKJ/pub?start=false&loop=false&delayms=3000) 
 ## 資料集
 - description
 - tags
